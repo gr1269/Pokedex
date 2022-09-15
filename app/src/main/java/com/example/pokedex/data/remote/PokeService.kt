@@ -1,4 +1,4 @@
-package com.example.pokedex.data
+package com.example.pokedex.data.remote
 
 import com.example.pokedex.domain.Pokemon
 import retrofit2.Response
