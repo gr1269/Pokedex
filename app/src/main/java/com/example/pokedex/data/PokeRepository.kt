@@ -15,4 +15,6 @@ class PokeRepository @Inject constructor(
         networkCall = {remoteDataSource.getPokemons()},
         saveCallResult = {localDataSource.insertAll(it)}
     )
+
+    fun getPokemonById(id: String) = localDataSource.getPokemonById(id)
 }

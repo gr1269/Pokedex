@@ -5,56 +5,105 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.toColor
+import androidx.core.view.isVisible
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import com.bumptech.glide.Glide
 import com.example.pokedex.R
+import com.example.pokedex.databinding.FragmentAboutPokemonBinding
+import com.example.pokedex.util.PokemonColorUtil
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AboutPokemonFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@AndroidEntryPoint
 class AboutPokemonFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+
+    private var _binding: FragmentAboutPokemonBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel:PokemonViewModel by hiltNavGraphViewModels(R.id.main_nav)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_about_pokemon, container, false)
+        _binding = FragmentAboutPokemonBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AboutPokemonFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AboutPokemonFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val id = checkNotNull(arguments?.getString("id"))
+        viewModel.getPokemonById(id).observe(viewLifecycleOwner){ pokemon ->
+            binding?.apply {
+                pokemonName.text = pokemon.name
+                pokemonId.text = pokemon.id
+
+                val color = PokemonColorUtil(view.context).getPokemonColor(pokemon.typeofpokemon)
+                mainLayout.setBackgroundColor(color)
+                progressHp.setIndicatorColor(color)
+                progressAtk.setIndicatorColor(color)
+                progressDef.setIndicatorColor(color)
+                progressSatk.setIndicatorColor(color)
+                progressSdef.setIndicatorColor(color)
+                progressSpd.setIndicatorColor(color)
+                tvAbout.setTextColor(color)
+                textStats.setTextColor(color)
+                tvHp.setTextColor(color)
+                tvAtk.setTextColor(color)
+                tvDef.setTextColor(color)
+                tvSatk.setTextColor(color)
+                tvSdef.setTextColor(color)
+                tvSpd.setTextColor(color)
+
+                imagePokemon.let {
+                    Glide.with(binding.root)
+                        .load(pokemon.imageurl)
+                        .into(it)
                 }
+
+                pokemon.typeofpokemon?.getOrNull(0).let { firstType ->
+                    textType1.text = firstType
+                    textType1.isVisible = firstType != null
+                    typePokemon1.isVisible = firstType != null
+
+                }
+
+                pokemon.typeofpokemon?.getOrNull(1).let { secondType ->
+                    textType2.text = secondType
+                    textType1.isVisible = secondType != null
+                    typePokemon2.isVisible = secondType != null
+                }
+
+                textWeight.text = pokemon.weight
+                textHeight.text = pokemon.height
+
+
+                pokemon.abilities?.getOrNull(0).let { secondMove ->
+                    textMove2.text = secondMove
+                    textMove2.isVisible = secondMove != null
+                }
+
+                textDescription.text = pokemon.xdescription
+
+                hpStats.text = pokemon.hp.toString()
+                atkStats.text = pokemon.attack.toString()
+                defStats.text = pokemon.defense.toString()
+                satkStats.text = pokemon.special_attack.toString()
+                sdefStats.text = pokemon.special_defense.toString()
+                spdStats.text = pokemon.speed.toString()
+
+                progressHp.setProgress(pokemon.hp!!)
+                progressAtk.setProgress(pokemon.attack!!)
+                progressDef.setProgress(pokemon.defense!!)
+                progressSatk.setProgress(pokemon.special_attack!!)
+                progressSdef.setProgress(pokemon.special_defense!!)
+                progressSpd.setProgress(pokemon.speed!!)
+
+
             }
+
+        }
     }
+
 }

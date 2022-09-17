@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokedex.R
@@ -21,7 +24,7 @@ class PokemonsFragment : Fragment(), PokemonAdapter.PokemonItemListener {
     private var _binding : FragmentPokemonsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<PokemonViewModel>()
+    private val viewModel:PokemonViewModel by hiltNavGraphViewModels(R.id.main_nav)
 
     private lateinit var adapter: PokemonAdapter
 
@@ -61,6 +64,9 @@ class PokemonsFragment : Fragment(), PokemonAdapter.PokemonItemListener {
     }
 
     override fun onClickedPokemon(pokemonId: String) {
-
+        findNavController().navigate(
+            R.id.action_pokemonsFragment_to_aboutPokemonFragment,
+            bundleOf("id" to pokemonId)
+        )
     }
 }
