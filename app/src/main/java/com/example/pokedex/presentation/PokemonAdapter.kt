@@ -17,7 +17,7 @@ import com.example.pokedex.util.PokemonColorUtil
 class PokemonAdapter(private val listener: PokemonItemListener):RecyclerView.Adapter<PokemonViewHolder>() {
 
     interface PokemonItemListener {
-        fun onClickedPokemon(pokemonId: String)
+        fun onClickedPokemon(pokemonId: Int)
     }
 
     private val items = ArrayList<Pokemon>()
@@ -37,8 +37,10 @@ class PokemonAdapter(private val listener: PokemonItemListener):RecyclerView.Ada
 
     override fun getItemCount(): Int = items.size
 
-    override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         holder.bind(items[position])
+    }
+
 }
 
     class PokemonViewHolder(private val itemBinding: ItemPokemonBinding,
@@ -67,6 +69,7 @@ class PokemonAdapter(private val listener: PokemonItemListener):RecyclerView.Ada
         }
 
         override fun onClick(v: View?) {
-            listener.onClickedPokemon(pokemon.id)
+            var position = adapterPosition
+            listener.onClickedPokemon(position)
         }
     }

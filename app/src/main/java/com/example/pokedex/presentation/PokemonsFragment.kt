@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokedex.R
 import com.example.pokedex.databinding.FragmentPokemonsBinding
+import com.example.pokedex.domain.Pokemon
 import com.example.pokedex.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -58,15 +59,13 @@ class PokemonsFragment : Fragment(), PokemonAdapter.PokemonItemListener {
                 Resource.Status.ERROR ->
                     Toast.makeText(requireContext(),it.message, Toast.LENGTH_SHORT).show()
                 Resource.Status.LOADING ->
-                    Timber.e("pokemons loadaing")
+                    Timber.e("pokemons loading")
             }
         }
     }
 
-    override fun onClickedPokemon(pokemonId: String) {
-        findNavController().navigate(
-            R.id.action_pokemonsFragment_to_aboutPokemonFragment,
-            bundleOf("id" to pokemonId)
-        )
+    override fun onClickedPokemon(pokemon: Int) {
+        val action = PokemonsFragmentDirections.actionPokemonsFragmentToViewPagerPokemonsFragment(pokemon)
+        this.findNavController().navigate(action)
     }
 }
